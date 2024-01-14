@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Quizz {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  question_text String
+  createdAt     DateTime @default(now())
+
+  answers Answer[]
+
+  @@map("quizzes")
+}
+
+model Answer {
+  id         String  @id @default(uuid())
+  text       String
+  is_correct Boolean
+
+  Quizz    Quizz?  @relation(fields: [quizz_id], references: [id])
+  quizz_id String?
+
+  @@map("answers")
+}
