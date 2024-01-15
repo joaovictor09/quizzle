@@ -57,6 +57,12 @@ export async function deleteQuizzAction(quizzId: string) {
         answers: true,
       },
     })
+
+    await prisma.answer.deleteMany({
+      where: {
+        quizz_id: quizzId,
+      },
+    })
   } catch (error) {
     console.log(error)
   }

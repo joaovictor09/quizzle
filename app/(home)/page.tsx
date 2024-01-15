@@ -17,7 +17,7 @@ export default async function Home({
   searchParams: { create, deleting, quizzId },
 }: HomeProps) {
   return (
-    <div className="m-4">
+    <div className="m-4 w-full">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="flex w-full flex-col text-3xl font-bold">Quizzes</h1>

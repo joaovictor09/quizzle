@@ -21,7 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} flex min-h-screen w-full flex-col items-center`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
