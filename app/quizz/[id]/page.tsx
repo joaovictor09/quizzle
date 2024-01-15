@@ -36,23 +36,31 @@ async function loadQuizz(quizzId: string) {
 
 interface AnswerCardProps {
   showCorrect?: boolean
+  revealAnswer(): Promise<void>
   answer: {
     text: string
     is_correct: boolean
   }
 }
 
-function AnswerCard({ answer, showCorrect = false }: AnswerCardProps) {
+function AnswerCard({
+  answer,
+  showCorrect = false,
+  revealAnswer,
+}: AnswerCardProps) {
   const isCorrect = String(showCorrect) === 'true' && answer.is_correct
 
   return (
-    <li
-      className={classNames(
-        'rounded-md border p-4',
-        isCorrect ? 'border-emerald-500' : 'border-muted',
-      )}
-    >
-      <p>{answer.text}</p>
+    <li className="w-full">
+      <form action={revealAnswer}>
+        <Button
+          variant="outline"
+          type="submit"
+          className={classNames('w-full', isCorrect && 'border-emerald-500')}
+        >
+          <p>{answer.text}</p>
+        </Button>
+      </form>
     </li>
   )
 }
@@ -87,6 +95,7 @@ export default async function Quizz({
             <AnswerCard
               showCorrect={showCorrect}
               key={answer.id}
+              revealAnswer={revealAnswer}
               answer={answer}
             />
           ))}

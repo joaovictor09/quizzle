@@ -1,9 +1,22 @@
+import Link from 'next/link'
+
 import { Button } from './ui/button'
 
 export function NavItems() {
+  const items = [
+    {
+      text: 'Home',
+      href: '/',
+    },
+  ]
+
   return (
     <nav>
-      <Button variant={'link'}>Home</Button>
+      {items.map((item) => (
+        <Button variant={'link'} key={item.href} asChild>
+          <Link href={item.href}>{item.text}</Link>
+        </Button>
+      ))}
     </nav>
   )
 }
