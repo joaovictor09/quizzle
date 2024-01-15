@@ -46,8 +46,6 @@ export async function submitNewQuizzAction({
 }
 
 export async function deleteQuizzAction(quizzId: string) {
-  console.log(quizzId)
-
   try {
     await prisma.quizz.delete({
       where: {

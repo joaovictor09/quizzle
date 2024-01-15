@@ -54,8 +54,6 @@ export function CreateNewQuizzForm() {
   const isSubmitting = form.formState.isSubmitting
 
   async function onSubmit(data: FormModel) {
-    console.log(data)
-
     await submitNewQuizzAction(data).then(() => {
       toast.success('Quizz successfully created')
     })
