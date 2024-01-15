@@ -18,6 +18,7 @@ type QuizzProps = {
   }
   searchParams: {
     show_correct?: boolean
+    answer_selected_id?: string
   }
 }
 
@@ -35,28 +36,54 @@ async function loadQuizz(quizzId: string) {
 }
 
 interface AnswerCardProps {
-  showCorrect?: boolean
-  revealAnswer(): Promise<void>
+  quizzId: string
+  searchParams: {
+    show_correct?: boolean
+    answer_selected_id?: string
+  }
   answer: {
+    id: string
     text: string
     is_correct: boolean
   }
 }
 
 function AnswerCard({
+  quizzId,
   answer,
-  showCorrect = false,
-  revealAnswer,
+  searchParams: {
+    show_correct: showCorrect = false,
+    answer_selected_id: answerSelectedId = '',
+  },
 }: AnswerCardProps) {
   const isCorrect = String(showCorrect) === 'true' && answer.is_correct
+  const isInCorrect =
+    String(showCorrect) === 'true' &&
+    answerSelectedId === answer.id &&
+    !isCorrect
+
+  async function revealAnswer(data: FormData) {
+    'use server'
+
+    const answerId = data.get('answer_selected_id')
+
+    redirect(
+      `/quizz/${quizzId}?show_correct=true&answer_selected_id=${answerId}`,
+    )
+  }
 
   return (
     <li className="w-full">
       <form action={revealAnswer}>
+        <input type="hidden" name="answer_selected_id" value={answer.id} />
         <Button
           variant="outline"
           type="submit"
-          className={classNames('w-full', isCorrect && 'border-emerald-500')}
+          className={classNames(
+            'w-full',
+            isCorrect && 'border-emerald-500',
+            isInCorrect && 'border-red-500',
+          )}
         >
           <p>{answer.text}</p>
         </Button>
@@ -67,14 +94,14 @@ function AnswerCard({
 
 export default async function Quizz({
   params: { id },
-  searchParams: { show_correct: showCorrect },
+  searchParams,
 }: QuizzProps) {
   const quizz = await loadQuizz(id)
 
   async function revealAnswer() {
     'use server'
 
-    if (showCorrect) {
+    if (searchParams.show_correct) {
       redirect(`/quizz/${id}`)
     }
 
@@ -93,9 +120,9 @@ export default async function Quizz({
         <ul className="flex w-full flex-col gap-2">
           {quizz?.answers.map((answer) => (
             <AnswerCard
-              showCorrect={showCorrect}
+              quizzId={id}
+              searchParams={searchParams}
               key={answer.id}
-              revealAnswer={revealAnswer}
               answer={answer}
             />
           ))}
@@ -104,7 +131,7 @@ export default async function Quizz({
       <CardFooter>
         <form action={revealAnswer} className="w-full">
           <Button type="submit" className="w-full">
-            {showCorrect ? 'Unreveal' : 'Reveal'}
+            {searchParams.show_correct ? 'Unreveal' : 'Reveal'}
           </Button>
         </form>
       </CardFooter>
