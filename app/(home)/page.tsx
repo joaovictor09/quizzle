@@ -8,13 +8,14 @@ import { QuizzesSkeleton } from './quizzes-skeleton'
 interface HomeProps {
   searchParams: {
     create?: boolean
+    sharing?: boolean
     deleting?: boolean
     quizzId?: string
   }
 }
 
 export default async function Home({
-  searchParams: { create, deleting, quizzId },
+  searchParams: { create, deleting, quizzId, sharing },
 }: HomeProps) {
   return (
     <div className="w-full p-4">
@@ -31,7 +32,7 @@ export default async function Home({
       </div>
 
       <Suspense fallback={<QuizzesSkeleton />}>
-        <Quizzes />
+        <Quizzes sharing={sharing} />
       </Suspense>
     </div>
   )
